@@ -46,8 +46,8 @@ export default function TimestampPage() {
 
 				{/* Simbol fokus + di tengah */}
 				<div className="flex flex-col items-center">
-					<div className="text-white text-9xl font-light mb-8">+</div>
-					<p className="text-white text-lg opacity-75">
+					<div className="text-white text-7xl font-thin mb-8">+</div>
+					<p className="text-white text-sm opacity-75">
 						Fokuskan pandangan Anda pada simbol di atas
 					</p>
 				</div>

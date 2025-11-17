@@ -126,7 +126,7 @@ export default function SurveyPage() {
 				{/* Countdown */}
 				<div className="flex justify-between items-center mb-6">
 					<h1 className="text-2xl font-bold text-gray-800">
-						Rating Video
+						Mohon Jawab dengan Jujur
 					</h1>
 					<div className="bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center">
 						<div className="text-center">
@@ -189,7 +189,7 @@ export default function SurveyPage() {
 
 						<div>
 							<label className="block text-lg font-medium text-gray-800 mb-3">
-								Confidence Score (seberapa yakin dengan jawaban Anda?)
+								Seberapa percaya diri Anda dengan penilaian di atas?
 								<span className="text-red-500">*</span>
 							</label>
 							<select
@@ -198,12 +198,12 @@ export default function SurveyPage() {
 								className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
 								required
 							>
-								<option value="">Pilih confidence score</option>
-								<option value="1">1 - Sangat Tidak Yakin</option>
-								<option value="2">2 - Tidak Yakin</option>
-								<option value="3">3 - Netral</option>
-								<option value="4">4 - Yakin</option>
-								<option value="5">5 - Sangat Yakin</option>
+								<option value="">Seberapa yakin/percaya diri ❓</option>
+								<option value="1">Tidak yakin 😕</option>
+								<option value="2">Mungkin tidak yakin 🤔</option>
+								<option value="3">Netral 😐</option>
+								<option value="4">Mungkin yakin 🙂</option>
+								<option value="5">Yakin 😄</option>
 							</select>
 						</div>
 
@@ -211,7 +211,7 @@ export default function SurveyPage() {
 							type="submit"
 							className="w-full bg-gray-800 text-white py-4 rounded-lg hover:bg-gray-700 transition-colors font-medium text-lg"
 						>
-							Kirim Rating
+							Kirim
 						</button>
 					</form>
 				) : (
@@ -237,7 +237,7 @@ export default function SurveyPage() {
 									<p className="text-sm text-gray-500 mt-2">detik tersisa</p>
 								</div>
 								<p className="text-sm text-gray-500">
-									Bersiap untuk video berikutnya...
+									Relaks dan bersiaplah untuk video berikutnya...
 								</p>
 							</div>
 						) : (

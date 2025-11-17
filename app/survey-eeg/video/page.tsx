@@ -3,56 +3,55 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-// Daftar 10 video (gunakan URL dummy atau video real)
 const VIDEO_LIST = [
 	{
 		id: "video_1",
-		url: "https://www.w3schools.com/html/mov_bbb.mp4",
+		url: "/videos/Video Biologi Redominasi FIX.mp4",
 		title: "Video 1",
 	},
 	{
 		id: "video_2",
-		url: "https://www.w3schools.com/html/movie.mp4",
+		url: "/videos/Video FIKOM Gravity FIX.mp4",
 		title: "Video 2",
 	},
 	{
 		id: "video_3",
-		url: "https://www.w3schools.com/html/mov_bbb.mp4",
+		url: "/videos/Video FIKOM Model Komunikasi FIX.mp4",
 		title: "Video 3",
 	},
 	{
 		id: "video_4",
-		url: "https://www.w3schools.com/html/movie.mp4",
+		url: "/videos/Video Indonesia Core FIX.mp4",
 		title: "Video 4",
 	},
 	{
 		id: "video_5",
-		url: "https://www.w3schools.com/html/mov_bbb.mp4",
+		url: "/videos/Video Kucing FIX.mp4",
 		title: "Video 5",
 	},
 	{
 		id: "video_6",
-		url: "https://www.w3schools.com/html/movie.mp4",
+		url: "/videos/Video Kucing Gemoy FIX.mp4",
 		title: "Video 6",
 	},
 	{
 		id: "video_7",
-		url: "https://www.w3schools.com/html/mov_bbb.mp4",
+		url: "/videos/Video Meme 1 FIX.mp4",
 		title: "Video 7",
 	},
 	{
 		id: "video_8",
-		url: "https://www.w3schools.com/html/movie.mp4",
+		url: "/videos/Video MUKBANG FIX.mp4",
 		title: "Video 8",
 	},
 	{
 		id: "video_9",
-		url: "https://www.w3schools.com/html/mov_bbb.mp4",
+		url: "/videos/Video FIKOM Analisis FIX.mp4",
 		title: "Video 9",
 	},
 	{
 		id: "video_10",
-		url: "https://www.w3schools.com/html/movie.mp4",
+		url: "/videos/Video FAPERTA Dasar Genetika FIX.mp4",
 		title: "Video 10",
 	},
 ];
@@ -223,9 +222,9 @@ export default function VideoPage() {
 
 			{/* Instruksi */}
 			<div className="mt-8 text-center text-white">
-				<p className="text-lg">Tonton video hingga selesai</p>
+				<p className="text-lg">Tonton Video dengan Seksama</p>
 				<p className="text-sm text-gray-400 mt-2">
-					Setelah video selesai, Anda akan diminta memberikan rating
+					Relaks, fokus, dan hindari gangguan selama menonton video.
 				</p>
 			</div>
 		</div>

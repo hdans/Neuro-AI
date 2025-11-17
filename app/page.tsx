@@ -118,7 +118,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="border-t border-gray-800 pt-8 text-center">
             <p className="text-gray-400">
-              Dibuat oleh tim <a className="hover:underline" href="https://github.com/hdans/Neuro-AI">Neuro-AI</a>.
+              © <a className="hover:underline" href="https://github.com/hdans/Neuro-AI">Neuro AI : Dafa | Hafizh | Danish | Dzikri | Ainur </a>
             </p>
           </div>
         </div>
