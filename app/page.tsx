@@ -63,10 +63,17 @@ export default function LandingPage() {
           <div className="mt-16 relative">
             <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-5xl mx-auto border border-gray-200">
               <div className="aspect-video bg-gradient-to-br from-blue-50 to-gray-100 rounded-lg flex items-center justify-center">
-                <div className="text-center">
+                {/* <div className="text-center">
                   <div className="text-6xl mb-4">💼</div>
                   <p className="text-gray-500 font-medium">Dashboard Preview</p>
-                </div>
+                </div> */}
+                <Image
+                  src="/dashboard.png"
+                  alt="Tampilan dashboard utama."
+                  width={1000}
+                  height={800}
+                >
+                </Image>
               </div>
             </div>
           </div>
