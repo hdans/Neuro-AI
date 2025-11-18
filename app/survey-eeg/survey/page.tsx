@@ -21,9 +21,14 @@ export default function SurveyPage() {
 
 	useEffect(() => {
 		// Ambil data user
-		const users = JSON.parse(localStorage.getItem("users") || "[]");
-		if (users.length > 0) {
-			setUserData(users[users.length - 1]);
+		const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+		if (currentUser.email) {
+			setUserData({
+				name: currentUser.name || "",
+				email: currentUser.email || "",
+				gender: currentUser.gender || "",
+				age: currentUser.age || "",
+			});
 		}
 
 		// Ambil ID video yang baru ditonton
@@ -66,7 +71,6 @@ export default function SurveyPage() {
 
 		try {
 			// Kirim ke Google Apps Script
-			// GANTI URL INI DENGAN URL APPS SCRIPT ANDA
 			const response = await fetch(
 				"https://script.google.com/macros/s/AKfycbz-mxdQjMsaL4CB2YsABkNh3flapK_ykljm8hkdFW_TQzCihpGIOAeTY8_WAhNjOUTH/exec",
 				{
@@ -95,19 +99,28 @@ export default function SurveyPage() {
 			// Setelah countdown habis, tampilkan loading 3 detik
 			setShowLoading(true);
 			
+			// Preload video berikutnya selama loading
+			const currentIndex = parseInt(
+				localStorage.getItem("currentVideoIndex") || "0"
+			);
+			const nextIndex = currentIndex + 1;
+			const randomizedVideos = JSON.parse(
+				localStorage.getItem("randomizedVideoOrder") || "[]"
+			);
+			
+			if (nextIndex < randomizedVideos.length) {
+				// Preload video berikutnya
+				const nextVideoUrl = randomizedVideos[nextIndex].url;
+				const videoPreloader = document.createElement('video');
+				videoPreloader.src = nextVideoUrl;
+				videoPreloader.preload = 'auto';
+				videoPreloader.load();
+				
+				console.log('Preloading next video:', nextVideoUrl);
+			}
+			
 			// Setelah 3 detik loading, baru pindah ke video berikutnya
 			setTimeout(() => {
-				// Increment video index
-				const currentIndex = parseInt(
-					localStorage.getItem("currentVideoIndex") || "0"
-				);
-				const nextIndex = currentIndex + 1;
-
-				// Cek apakah masih ada video lagi
-				const randomizedVideos = JSON.parse(
-					localStorage.getItem("randomizedVideoOrder") || "[]"
-				);
-
 				if (nextIndex < randomizedVideos.length) {
 					// Masih ada video, lanjut ke video berikutnya
 					localStorage.setItem("currentVideoIndex", nextIndex.toString());
@@ -126,7 +139,7 @@ export default function SurveyPage() {
 				{/* Countdown */}
 				<div className="flex justify-between items-center mb-6">
 					<h1 className="text-2xl font-bold text-gray-800">
-						Mohon Jawab dengan Jujur
+						Rating Video
 					</h1>
 					<div className="bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center">
 						<div className="text-center">
@@ -189,7 +202,7 @@ export default function SurveyPage() {
 
 						<div>
 							<label className="block text-lg font-medium text-gray-800 mb-3">
-								Seberapa percaya diri Anda dengan penilaian di atas?
+								Confidence Score (seberapa yakin dengan jawaban Anda?)
 								<span className="text-red-500">*</span>
 							</label>
 							<select
@@ -198,12 +211,12 @@ export default function SurveyPage() {
 								className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
 								required
 							>
-								<option value="">Seberapa yakin/percaya diri ❓</option>
-								<option value="1">Tidak yakin 😕</option>
-								<option value="2">Mungkin tidak yakin 🤔</option>
-								<option value="3">Netral 😐</option>
-								<option value="4">Mungkin yakin 🙂</option>
-								<option value="5">Yakin 😄</option>
+								<option value="">Pilih confidence score</option>
+								<option value="1">1 - Sangat Tidak Yakin</option>
+								<option value="2">2 - Tidak Yakin</option>
+								<option value="3">3 - Netral</option>
+								<option value="4">4 - Yakin</option>
+								<option value="5">5 - Sangat Yakin</option>
 							</select>
 						</div>
 
@@ -211,7 +224,7 @@ export default function SurveyPage() {
 							type="submit"
 							className="w-full bg-gray-800 text-white py-4 rounded-lg hover:bg-gray-700 transition-colors font-medium text-lg"
 						>
-							Kirim
+							Kirim Rating
 						</button>
 					</form>
 				) : (
@@ -237,7 +250,7 @@ export default function SurveyPage() {
 									<p className="text-sm text-gray-500 mt-2">detik tersisa</p>
 								</div>
 								<p className="text-sm text-gray-500">
-									Relaks dan bersiaplah untuk video berikutnya...
+									Bersiap untuk video berikutnya...
 								</p>
 							</div>
 						) : (

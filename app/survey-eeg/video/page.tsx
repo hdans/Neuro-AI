@@ -105,6 +105,22 @@ export default function VideoPage() {
 		setIsLoading(false);
 	}, [router]);
 
+	// Preload video berikutnya saat video saat ini sedang diputar
+	useEffect(() => {
+		if (randomizedVideos.length > 0 && currentVideoIndex < randomizedVideos.length - 1) {
+			const nextIndex = currentVideoIndex + 1;
+			const nextVideoUrl = randomizedVideos[nextIndex].url;
+			
+			// Preload video berikutnya di background
+			const videoPreloader = document.createElement('video');
+			videoPreloader.src = nextVideoUrl;
+			videoPreloader.preload = 'auto';
+			videoPreloader.load();
+			
+			console.log('Background preloading:', nextVideoUrl);
+		}
+	}, [currentVideoIndex, randomizedVideos]);
+
 	const handleVideoEnd = () => {
 		// Simpan ID video yang baru saja ditonton
 		localStorage.setItem(
@@ -222,7 +238,7 @@ export default function VideoPage() {
 
 			{/* Instruksi */}
 			<div className="mt-8 text-center text-white">
-				<p className="text-lg">Tonton Video dengan Seksama</p>
+				<p className="text-lg">Tonton video hingga selesai</p>
 				<p className="text-sm text-gray-400 mt-2">
 					Relaks, fokus, dan hindari gangguan selama menonton video.
 				</p>
