@@ -1,19 +1,95 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function FinishPage() {
 	const router = useRouter();
+	const [surveyDuration, setSurveyDuration] = useState(0);
+	const [isSendingData, setIsSendingData] = useState(true);
 
 	useEffect(() => {
+		// Hitung durasi survey
+		const startTimeStr = localStorage.getItem("surveyStartTime");
+		
+		if (startTimeStr) {
+			const startTime = new Date(startTimeStr);
+			const endTime = new Date();
+			const durationMs = endTime.getTime() - startTime.getTime();
+			const durationSeconds = Math.floor(durationMs / 1000);
+			
+			setSurveyDuration(durationSeconds);
+
+			// Ambil data user untuk mengirim durasi
+			const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+			const phases = JSON.parse(localStorage.getItem("surveyPhases") || "[]");
+
+			// Format timing details untuk dikirim ke sheets
+			const timingDetails = phases.map((p: any) => 
+				`${p.phase}:${p.durationSeconds}s`
+			).join(" | ");
+
+			// Kirim data durasi survey ke Google Sheets
+			const completionData = {
+				userName: currentUser.name || "-",
+				userEmail: currentUser.email || "-",
+				userGender: currentUser.gender || "-",
+				userAge: currentUser.age || "-",
+				videoId: "COMPLETION",
+				rating: "Survey Selesai",
+				confidence: Math.ceil(durationSeconds / 60), // Durasi dalam menit
+				timestamp: endTime.toISOString(),
+				surveyDuration: `${Math.floor(durationSeconds / 60)}m ${durationSeconds % 60}s`,
+				timingDetails: timingDetails,
+			};
+
+			// Kirim ke Google Apps Script
+			fetch(
+				"https://script.google.com/macros/s/AKfycbwwPfBl2rgHdS7ItP5UW8ElDmbJ2D2ktLTT1eUOqn93q842Q8j7VXpdRrJXQCPQrDG4/exec",
+				{
+					method: "POST",
+					mode: "no-cors",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(completionData),
+				}
+			)
+				.then(() => {
+					console.log("Survey completion data sent");
+					setIsSendingData(false);
+				})
+				.catch((error) => {
+					console.error("Error sending completion data:", error);
+					setIsSendingData(false);
+				});
+		}
+
 		// Clear survey session data
-		localStorage.removeItem("surveyStarted");
-		localStorage.removeItem("currentVideoIndex");
-		localStorage.removeItem("lastWatchedVideoId");
-		// Keep randomizedVideoOrder untuk referensi jika diperlukan
+		return () => {
+			localStorage.removeItem("surveyStarted");
+			localStorage.removeItem("currentVideoIndex");
+			localStorage.removeItem("lastWatchedVideoId");
+			localStorage.removeItem("randomizedVideoOrder");
+			localStorage.removeItem("surveyStartTime");
+			localStorage.removeItem("surveyPhases");
+		};
 	}, []);
+
+	const formatDuration = (seconds: number) => {
+		const hours = Math.floor(seconds / 3600);
+		const minutes = Math.floor((seconds % 3600) / 60);
+		const secs = seconds % 60;
+
+		if (hours > 0) {
+			return `${hours}h ${minutes}m ${secs}s`;
+		} else if (minutes > 0) {
+			return `${minutes}m ${secs}s`;
+		} else {
+			return `${secs}s`;
+		}
+	};
 
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center px-4">
@@ -26,6 +102,24 @@ export default function FinishPage() {
 					<h2 className="text-2xl text-gray-700 mb-2">
 						Survey EEG Telah Selesai
 					</h2>
+				</div>
+
+				{/* Duration Display */}
+				<div className="bg-blue-50 border-2 border-blue-500 rounded-lg p-6 mb-8">
+					<div className="text-sm text-gray-600 mb-2">Total Waktu Survey</div>
+					<div className="text-5xl font-bold text-blue-600">
+						{formatDuration(surveyDuration)}
+					</div>
+					{isSendingData && (
+						<div className="text-sm text-gray-500 mt-3">
+							⏳ Mengirim data...
+						</div>
+					)}
+					{!isSendingData && (
+						<div className="text-sm text-green-600 mt-3">
+							✓ Data berhasil dikirim
+						</div>
+					)}
 				</div>
 
 				<div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg mb-8">

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function TimestampPage() {
 	const router = useRouter();
-	const [countdown, setCountdown] = useState(35);
+	const [countdown, setCountdown] = useState(60);
 
 	useEffect(() => {
 		// Cek apakah survey sudah dimulai
@@ -15,11 +15,34 @@ export default function TimestampPage() {
 			return;
 		}
 
+		// Mulai tracking fase fokus
+		const phases = JSON.parse(localStorage.getItem("surveyPhases") || "[]");
+		phases.push({
+			phase: "focus",
+			startTime: new Date().toISOString(),
+		});
+		localStorage.setItem("surveyPhases", JSON.stringify(phases));
+
 		// Countdown timer
 		const interval = setInterval(() => {
 			setCountdown((prev) => {
 				if (prev <= 1) {
 					clearInterval(interval);
+					
+					// Akhiri fase fokus
+					const updatedPhases = JSON.parse(
+						localStorage.getItem("surveyPhases") || "[]"
+					);
+					if (updatedPhases.length > 0 && !updatedPhases[updatedPhases.length - 1].endTime) {
+						const lastPhase = updatedPhases[updatedPhases.length - 1];
+						const endTime = new Date();
+						lastPhase.endTime = endTime.toISOString();
+						lastPhase.durationSeconds = Math.floor(
+							(endTime.getTime() - new Date(lastPhase.startTime).getTime()) / 1000
+						);
+						localStorage.setItem("surveyPhases", JSON.stringify(updatedPhases));
+					}
+					
 					// Redirect ke halaman video
 					setTimeout(() => {
 						router.push("/survey-eeg/video");
@@ -46,8 +69,8 @@ export default function TimestampPage() {
 
 				{/* Simbol fokus + di tengah */}
 				<div className="flex flex-col items-center">
-					<div className="text-white text-7xl font-thin mb-8">+</div>
-					<p className="text-white text-sm opacity-75">
+					<div className="text-white text-9xl font-light mb-8">+</div>
+					<p className="text-white text-lg opacity-75">
 						Fokuskan pandangan Anda pada simbol di atas
 					</p>
 				</div>
@@ -56,7 +79,7 @@ export default function TimestampPage() {
 				<div className="fixed bottom-0 left-0 right-0 h-2 bg-gray-800">
 					<div
 						className="h-full bg-blue-500 transition-all duration-1000"
-						style={{ width: `${((35 - countdown) / 35) * 100}%` }}
+						style={{ width: `${((60 - countdown) / 60) * 100}%` }}
 					/>
 				</div>
 			</div>

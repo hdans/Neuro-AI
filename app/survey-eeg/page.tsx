@@ -3,15 +3,88 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+const VIDEO_LIST = [
+	{
+		id: "video_1",
+		url: "/videos/Video Biologi Redominasi FIX.mp4",
+		title: "Video 1",
+	},
+	{
+		id: "video_2",
+		url: "/videos/Video FIKOM Gravity FIX.mp4",
+		title: "Video 2",
+	},
+	{
+		id: "video_3",
+		url: "/videos/Video FIKOM Model Komunikasi FIX.mp4",
+		title: "Video 3",
+	},
+	{
+		id: "video_4",
+		url: "/videos/Video Indonesia Core FIX.mp4",
+		title: "Video 4",
+	},
+	{
+		id: "video_5",
+		url: "/videos/Video Kucing FIX.mp4",
+		title: "Video 5",
+	},
+	{
+		id: "video_6",
+		url: "/videos/Video Kucing Gemoy FIX.mp4",
+		title: "Video 6",
+	},
+	{
+		id: "video_7",
+		url: "/videos/Video Meme 1 FIX.mp4",
+		title: "Video 7",
+	},
+	{
+		id: "video_8",
+		url: "/videos/Video MUKBANG FIX.mp4",
+		title: "Video 8",
+	},
+	{
+		id: "video_9",
+		url: "/videos/Video FIKOM Analisis FIX.mp4",
+		title: "Video 9",
+	},
+	{
+		id: "video_10",
+		url: "/videos/Video FAPERTA Dasar Genetika FIX.mp4",
+		title: "Video 10",
+	},
+];
+
+// Fungsi untuk randomize array
+function shuffleArray(array: any[]) {
+	const shuffled = [...array];
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+	}
+	return shuffled;
+}
+
 export default function SurveyEEGPage() {
 	const router = useRouter();
 
 	const handleStartSurvey = () => {
-		// Inisialisasi survey session
+		// Inisialisasi survey session dengan timestamp
 		const sessionId = Date.now().toString();
+		const startTime = new Date();
+		
+		// Buat random video order SEKALI saja untuk sesi ini
+		const shuffled = shuffleArray(VIDEO_LIST);
+		
+		// Inisialisasi tracking waktu
+		localStorage.setItem("surveyPhases", JSON.stringify([]));
+		
 		localStorage.setItem("surveySessionId", sessionId);
+		localStorage.setItem("surveyStartTime", startTime.toISOString());
 		localStorage.setItem("surveyStarted", "true");
 		localStorage.setItem("currentVideoIndex", "0");
+		localStorage.setItem("randomizedVideoOrder", JSON.stringify(shuffled));
 		
 		router.push("/survey-eeg/timestamp");
 	};
@@ -102,7 +175,7 @@ export default function SurveyEEGPage() {
 							<li>Pastikan Anda berada di tempat yang tenang</li>
 							<li>Gunakan headphone untuk pengalaman terbaik</li>
 							<li>Jangan refresh atau keluar dari halaman selama survey</li>
-							<li>Total waktu survey sekitar 20-25 menit</li>
+							<li>Total waktu survey sekitar 18-20 menit</li>
 						</ul>
 					</div>
 

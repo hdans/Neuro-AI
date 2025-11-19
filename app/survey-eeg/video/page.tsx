@@ -3,69 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-const VIDEO_LIST = [
-	{
-		id: "video_1",
-		url: "/videos/Video Biologi Redominasi FIX.mp4",
-		title: "Video 1",
-	},
-	{
-		id: "video_2",
-		url: "/videos/Video FIKOM Gravity FIX.mp4",
-		title: "Video 2",
-	},
-	{
-		id: "video_3",
-		url: "/videos/Video FIKOM Model Komunikasi FIX.mp4",
-		title: "Video 3",
-	},
-	{
-		id: "video_4",
-		url: "/videos/Video Indonesia Core FIX.mp4",
-		title: "Video 4",
-	},
-	{
-		id: "video_5",
-		url: "/videos/Video Kucing FIX.mp4",
-		title: "Video 5",
-	},
-	{
-		id: "video_6",
-		url: "/videos/Video Kucing Gemoy FIX.mp4",
-		title: "Video 6",
-	},
-	{
-		id: "video_7",
-		url: "/videos/Video Meme 1 FIX.mp4",
-		title: "Video 7",
-	},
-	{
-		id: "video_8",
-		url: "/videos/Video MUKBANG FIX.mp4",
-		title: "Video 8",
-	},
-	{
-		id: "video_9",
-		url: "/videos/Video FIKOM Analisis FIX.mp4",
-		title: "Video 9",
-	},
-	{
-		id: "video_10",
-		url: "/videos/Video FAPERTA Dasar Genetika FIX.mp4",
-		title: "Video 10",
-	},
-];
-
-// Fungsi untuk randomize array
-function shuffleArray(array: any[]) {
-	const shuffled = [...array];
-	for (let i = shuffled.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-	}
-	return shuffled;
-}
-
 export default function VideoPage() {
 	const router = useRouter();
 	const videoRef = useRef<HTMLVideoElement>(null);
@@ -84,17 +21,15 @@ export default function VideoPage() {
 			return;
 		}
 
-		// Ambil atau buat urutan video random
-		let videoOrder = localStorage.getItem("randomizedVideoOrder");
+		// Ambil urutan video yang sudah di-random di halaman landing
+		const videoOrder = localStorage.getItem("randomizedVideoOrder");
 		
-		if (!videoOrder) {
-			// Buat urutan random baru
-			const shuffled = shuffleArray(VIDEO_LIST);
-			localStorage.setItem("randomizedVideoOrder", JSON.stringify(shuffled));
-			setRandomizedVideos(shuffled);
-		} else {
-			// Gunakan urutan yang sudah ada
+		if (videoOrder) {
 			setRandomizedVideos(JSON.parse(videoOrder));
+		} else {
+			// Fallback: jika tidak ada, redirect (tidak seharusnya terjadi)
+			router.push("/survey-eeg");
+			return;
 		}
 
 		// Ambil index video saat ini
@@ -103,6 +38,14 @@ export default function VideoPage() {
 		);
 		setCurrentVideoIndex(savedIndex);
 		setIsLoading(false);
+
+		// Mulai tracking fase video
+		const phases = JSON.parse(localStorage.getItem("surveyPhases") || "[]");
+		phases.push({
+			phase: `video_${savedIndex + 1}`,
+			startTime: new Date().toISOString(),
+		});
+		localStorage.setItem("surveyPhases", JSON.stringify(phases));
 	}, [router]);
 
 	// Preload video berikutnya saat video saat ini sedang diputar
@@ -143,18 +86,6 @@ export default function VideoPage() {
 		const video = e.currentTarget;
 		setDuration(video.duration);
 	};
-
-	// // Toggle play/pause
-	// const togglePlayPause = () => {
-	// 	if (videoRef.current) {
-	// 		if (isPlaying) {
-	// 			videoRef.current.pause();
-	// 		} else {
-	// 			videoRef.current.play();
-	// 		}
-	// 		setIsPlaying(!isPlaying);
-	// 	}
-	// };
 
 	// Format waktu (detik ke MM:SS)
 	const formatTime = (seconds: number) => {
@@ -202,18 +133,6 @@ export default function VideoPage() {
 				{/* Custom controls overlay */}
 				<div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6">
 					<div className="flex items-center justify-between text-white">
-						{/* Play/Pause button */}
-						{/* <button
-							onClick={togglePlayPause}
-							className="w-12 h-12 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full flex items-center justify-center transition-all"
-						>
-							{isPlaying ? (
-								<span className="text-2xl">⏸</span>
-							) : (
-								<span className="text-2xl">▶</span>
-							)}
-						</button> */}
-
 						{/* Time display */}
 						<div className="flex items-center space-x-4">
 							<span className="text-lg font-mono">
@@ -240,7 +159,7 @@ export default function VideoPage() {
 			<div className="mt-8 text-center text-white">
 				<p className="text-lg">Tonton video hingga selesai</p>
 				<p className="text-sm text-gray-400 mt-2">
-					Relaks, fokus, dan hindari gangguan selama menonton video.
+					Setelah video selesai, Anda akan diminta memberikan rating
 				</p>
 			</div>
 		</div>

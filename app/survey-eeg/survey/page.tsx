@@ -18,9 +18,10 @@ export default function SurveyPage() {
 		age: "",
 	});
 	const [lastVideoId, setLastVideoId] = useState("");
+	const [surveyStartTime, setSurveyStartTime] = useState<Date | null>(null);
 
 	useEffect(() => {
-		// Ambil data user
+		// Ambil data user dari localStorage
 		const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
 		if (currentUser.email) {
 			setUserData({
@@ -31,9 +32,26 @@ export default function SurveyPage() {
 			});
 		}
 
+		// Ambil waktu mulai survey
+		const startTimeStr = localStorage.getItem("surveyStartTime");
+		if (startTimeStr) {
+			setSurveyStartTime(new Date(startTimeStr));
+		}
+
 		// Ambil ID video yang baru ditonton
 		const videoId = localStorage.getItem("lastWatchedVideoId") || "";
 		setLastVideoId(videoId);
+
+		// Mulai tracking fase survey
+		const currentIndex = parseInt(
+			localStorage.getItem("currentVideoIndex") || "0"
+		);
+		const phases = JSON.parse(localStorage.getItem("surveyPhases") || "[]");
+		phases.push({
+			phase: `survey_${currentIndex + 1}`,
+			startTime: new Date().toISOString(),
+		});
+		localStorage.setItem("surveyPhases", JSON.stringify(phases));
 
 		// Countdown timer
 		const interval = setInterval(() => {
@@ -72,7 +90,7 @@ export default function SurveyPage() {
 		try {
 			// Kirim ke Google Apps Script
 			const response = await fetch(
-				"https://script.google.com/macros/s/AKfycbz-mxdQjMsaL4CB2YsABkNh3flapK_ykljm8hkdFW_TQzCihpGIOAeTY8_WAhNjOUTH/exec",
+				"https://script.google.com/macros/s/AKfycbySW0RM3Eyzx5BrFxFvOznXvh94bL2qM-Lbm29YWWa7MfCk0bHG2d3LhOr_2xKjX6Du/exec",
 				{
 					method: "POST",
 					mode: "no-cors",
