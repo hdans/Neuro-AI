@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function TimestampPage() {
 	const router = useRouter();
-	const [countdown, setCountdown] = useState(60);
+	const [countdown, setCountdown] = useState(35);
 
 	useEffect(() => {
 		// Cek apakah survey sudah dimulai
@@ -79,7 +79,7 @@ export default function TimestampPage() {
 				<div className="fixed bottom-0 left-0 right-0 h-2 bg-gray-800">
 					<div
 						className="h-full bg-blue-500 transition-all duration-1000"
-						style={{ width: `${((60 - countdown) / 60) * 100}%` }}
+						style={{ width: `${((35 - countdown) / 35) * 100}%` }}
 					/>
 				</div>
 			</div>
