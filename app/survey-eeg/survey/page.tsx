@@ -90,7 +90,7 @@ export default function SurveyPage() {
 		try {
 			// Kirim ke Google Apps Script
 			const response = await fetch(
-				"https://script.google.com/macros/s/AKfycbySW0RM3Eyzx5BrFxFvOznXvh94bL2qM-Lbm29YWWa7MfCk0bHG2d3LhOr_2xKjX6Du/exec",
+				"https://script.google.com/macros/s/AKfycbzEdhUrATu4x2TpdJqZmgTI0FWLoYh6d58L78DiK6e6eKH7U57C9i_H6FETKGuiD_Ad/exec",
 				{
 					method: "POST",
 					mode: "no-cors",
