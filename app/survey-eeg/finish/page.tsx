@@ -23,12 +23,25 @@ export default function FinishPage() {
 
 			// Ambil data user untuk mengirim durasi
 			const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
-			const phases = JSON.parse(localStorage.getItem("surveyPhases") || "[]");
+			let phases = JSON.parse(localStorage.getItem("surveyPhases") || "[]");
 
-			// Format timing details untuk dikirim ke sheets
-			const timingDetails = phases.map((p: any) => 
-				`${p.phase}:${p.durationSeconds}s`
-			).join(" | ");
+			// Pastikan fase terakhir selesai dengan benar
+			if (phases.length > 0 && !phases[phases.length - 1].endTime) {
+				const lastPhase = phases[phases.length - 1];
+				lastPhase.endTime = endTime.toISOString();
+				lastPhase.durationSeconds = Math.floor(
+					(endTime.getTime() - new Date(lastPhase.startTime).getTime()) / 1000
+				);
+			}
+
+			// Format timing details dengan error handling
+			const timingDetails = phases.map((p: any) => {
+				const duration = p.durationSeconds !== undefined ? p.durationSeconds : 0;
+				return `${p.phase}:${duration}s`;
+			}).join(" | ");
+
+			console.log("Phases data:", phases);
+			console.log("Timing details:", timingDetails);
 
 			// Kirim data durasi survey ke Google Sheets
 			const completionData = {

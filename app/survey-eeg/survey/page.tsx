@@ -90,7 +90,7 @@ export default function SurveyPage() {
 		try {
 			// Kirim ke Google Apps Script
 			const response = await fetch(
-				"https://script.google.com/macros/s/AKfycbzEdhUrATu4x2TpdJqZmgTI0FWLoYh6d58L78DiK6e6eKH7U57C9i_H6FETKGuiD_Ad/exec",
+				"https://script.google.com/macros/s/AKfycbz-mxdQjMsaL4CB2YsABkNh3flapK_ykljm8hkdFW_TQzCihpGIOAeTY8_WAhNjOUTH/exec",
 				{
 					method: "POST",
 					mode: "no-cors",
@@ -139,6 +139,19 @@ export default function SurveyPage() {
 			
 			// Setelah 3 detik loading, baru pindah ke video berikutnya
 			setTimeout(() => {
+				// Set endTime untuk fase survey
+				const phases = JSON.parse(localStorage.getItem("surveyPhases") || "[]");
+				if (phases.length > 0 && !phases[phases.length - 1].endTime) {
+					const lastPhase = phases[phases.length - 1];
+					const endTime = new Date();
+					lastPhase.endTime = endTime.toISOString();
+					lastPhase.durationSeconds = Math.floor(
+						(endTime.getTime() - new Date(lastPhase.startTime).getTime()) / 1000
+					);
+					localStorage.setItem("surveyPhases", JSON.stringify(phases));
+					console.log("Survey phase ended (with break):", lastPhase);
+				}
+
 				if (nextIndex < randomizedVideos.length) {
 					// Masih ada video, lanjut ke video berikutnya
 					localStorage.setItem("currentVideoIndex", nextIndex.toString());

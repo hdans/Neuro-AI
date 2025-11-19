@@ -71,6 +71,21 @@ export default function VideoPage() {
 			randomizedVideos[currentVideoIndex].id
 		);
 
+		// Akhiri tracking fase video
+		const phases = JSON.parse(localStorage.getItem("surveyPhases") || "[]");
+		if (phases.length > 0) {
+			const lastPhase = phases[phases.length - 1];
+			// Hanya set endTime jika belum ada
+			if (!lastPhase.endTime) {
+				const endTime = new Date();
+				lastPhase.endTime = endTime.toISOString();
+				lastPhase.durationSeconds = Math.floor(
+					(endTime.getTime() - new Date(lastPhase.startTime).getTime()) / 1000
+				);
+				localStorage.setItem("surveyPhases", JSON.stringify(phases));
+			}
+		}
+
 		// Redirect ke halaman survey
 		router.push("/survey-eeg/survey");
 	};
