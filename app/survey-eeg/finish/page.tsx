@@ -46,7 +46,7 @@ export default function FinishPage() {
 
 			// Kirim ke Google Apps Script
 			fetch(
-				"https://script.google.com/macros/s/AKfycbwwPfBl2rgHdS7ItP5UW8ElDmbJ2D2ktLTT1eUOqn93q842Q8j7VXpdRrJXQCPQrDG4/exec",
+				"https://script.google.com/macros/s/AKfycbyTNhMxDBaWa2HNuGEu1z5VTJLhLTw3xl--Vvr9lFNjCIE6_rZlOPtcfPTI1PsWHCtu/exec",
 				{
 					method: "POST",
 					mode: "no-cors",
